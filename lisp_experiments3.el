@@ -138,48 +138,54 @@
 
 (setq filename "delme2.xml")
 (write-content-to-file "sipanka i kupanka" filename)
+(setq num 3)
 
-(progn 
-  (defun read-file-to-buffer-and-process (filenamer)
-    (with-temp-buffer                     ;; create virtual buffer
-      (message filenamer)
-      (insert-file-contents filenamer)    ;; read file to buffer
-      (insert "\n---- added sumfin ----\n")
-      (goto-char (point-min))
-      (setq cnt 0)
-      (setq ismregxp "\\(<soapenv:Envelope[[:alpha:]\|[:space:]\|[:cntrl:]\|[:digit:]\|[:ascii:]]+?</soapenv:Envelope>\\)")
-      (setq opidregxp "\\(<OpId>[[:alpha:]\|[:digit:]]+?</OpId>\\)")
-      (setq keyfieldsregxp "<OpId>\\([[:alpha:]\|[:digit:]]+?\\)</OpId>[[:alpha:]\|[:space:]\|[:cntrl:]\|[:digit:]\|[:ascii:]]+?<MsgInstcId>\\([[:alpha:]\|[:digit:]]+?\\)</MsgInstcId>")
+(concat filename (number-to-string num))
 
-      (while (re-search-forward ismregxp nil t)
-	(setq before-search-p (point)) 
-	(setq match0 (match-string 0))
-	(setq sep "\n====match======\n")
-	(insert sep match0 sep)
-	(setq cnt (+ 1 cnt))
 
-	(with-temp-buffer
-	  (insert match0)
-	  (beginning-of-buffer)
+(defun read-file-to-buffer-and-process (filenamer)
+  (with-temp-buffer                     ;; create virtual buffer
+    (message filenamer)
+    (insert-file-contents filenamer)    ;; read file to buffer
+    (insert "\n---- added sumfin ----\n")
+    (goto-char (point-min))
+    (setq cnt 0)
+    (setq ismregxp "\\(<soapenv:Envelope[[:alpha:]\|[:space:]\|[:cntrl:]\|[:digit:]\|[:ascii:]]+?</soapenv:Envelope>\\)")
+    (setq opidregxp "\\(<OpId>[[:alpha:]\|[:digit:]]+?</OpId>\\)")
+    (setq keyfieldsregxp "<OpId>\\([[:alpha:]\|[:digit:]]+?\\)</OpId>[[:alpha:]\|[:space:]\|[:cntrl:]\|[:digit:]\|[:ascii:]]+?<MsgInstcId>\\([[:alpha:]\|[:digit:]]+?\\)</MsgInstcId>")
 
-	  (write-file (concat "messages/message-" (number-to-string cnt) ".xml"))
+    (while (re-search-forward ismregxp nil t)
+      ;;(setq before-search-p (point)) 
+      (setq match0 (match-string 0))
+      (setq sep "\n====match======\n")
+      ;;	(insert sep match0 sep)
+      (setq cnt (+ 1 cnt))
 
+      (with-temp-buffer
+	(insert match0)
+	(goto-char (point-min))
+
+	(if (re-search-forward keyfieldsregxp nil t)
+	    (insert sep (match-string 0) sep)
+	  (insert sep (match-string 1) sep)
 	  )
-	
+	(write-file (concat "messages/message-number-" (number-to-string cnt) ".xml"))
 
-	(print "matches:")
-	(print cnt)
-	(beginning-of-buffer)
-	;;(write-content-to-file (buffer-string) "delme-modified.xml")
-	(message (buffer-name))
-	(write-file "delme-modified5.xml")   ;; write current buffer under a name
 	)
+
+      (print "matches:")
+      (print cnt)
+
+      ;;(write-content-to-file (buffer-string) "delme-modified.xml")
+      (message (buffer-name))
+      (write-file "delme-modified5.xml")   ;; write current buffer under a name
       )
- 
     )
-  (setq filenamer "b2ginfo-small.log")
-  (read-file-to-buffer-and-process filenamer)
 )
+  ;;(setq filenamer "B2GInfo.log")
+(setq filenamer "b2ginfo-small.log")
+
+(read-file-to-buffer-and-process filenamer)
 
 ;;(setq pupu (point))
 
