@@ -157,7 +157,7 @@
     (while (re-search-forward ismregxp nil t)
       ;;(setq before-search-p (point)) 
       (setq match0 (match-string 0))
-      (setq sep "\n====match======\n")
+      (setq sep "\n------------\n")
       ;;	(insert sep match0 sep)
       (setq cnt (+ 1 cnt))
 
@@ -165,12 +165,18 @@
 	(insert match0)
 	(goto-char (point-min))
 
-	(if (re-search-forward keyfieldsregxp nil t)
-	    (insert sep (match-string 0) sep)
-	  (insert sep (match-string 1) sep)
+	(if (string-match keyfieldsregxp match0)
+	    (progn
+	      ;;(insert "match0" sep (match-string 1 match0) sep)
+	      (setq id (match-string 1 match0))
+	      (setq num (match-string 2 match0))
+	      (insert "match1" sep id sep)
+	      (insert "match2" sep num sep)
+	      )
 	  )
-	(write-file (concat "messages/message-number-" (number-to-string cnt) ".xml"))
 
+	(write-file (concat "messages/" id "-" num  ".xml"))
+	
 	)
 
       (print "matches:")
@@ -201,7 +207,22 @@
   (push-mark p2)
   (setq mark-active t)
   ;;(list p1 p2)
+  )
+
+
+
+  <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"><soapenv:Header><OpHdr><OpHdrVersNum>1.0</OpHdrVersNum><OpDefin><SvceId>UKBIB</SvceId><OpId>SI50OKYC</OpId><SvceVersNum>1.0</SvceVersNum></OpDefin></OpHdr><ISMHdr><ISMHdrVersNum>1.0</ISMHdrVersNum><AppName>UKHSBCB2G</AppName><UserId>GBHBEU1004116982TAPITIER1</UserId><EmplyUserId></EmplyUserId><ClntId></ClntId><ClntHostId>INTS2</ClntHostId><GloblLogId>CallCentreClientServlet</GloblLogId><MsgInstcId>9386654098</MsgInstcId><UserDviceId></UserDviceId><InbndChanlId>E</InbndChanlId><SessnId></SessnId><MsgCreatTmsp>2016-11-18T05:16:42.681000Z</MsgCreatTmsp></ISMHdr></soapenv:Header><soapenv:Body><IFSMsgHeader><PrimaryConsumerId>GBHBEU1004116982TAPITIER1</PrimaryConsumerId><ChangableConsumerId>GBHBEU1004116982TAPITIER1</ChangableConsumerId></IFSMsgHeader><RCI_IMSG binaryEncoding="base64Binary">MVVLQklCICAgU0k1ME9LWUNSUVNUMDAwR0JIQkVVMTAwNDExNjk4MlRBUElUSUVSMSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMTAwNDExNjk4Mg==</RCI_IMSG></soapenv:Body></soapenv:Envelope>]
+2016-11-18 05:16:42,926 SessionId=_B4FoWtzTO0vOSTd2SdiEgU [WebContainer : 10] INFO  [HostName : eu420csmwas01 10.210.44.58][Loc : com.hsbc.es.hostadapter.transporter.messaging.ESMessagingByteTransporter.handle(WorkContext,byte[]):byte[]][Desc : Response:<?xml version="1.0" encoding="UTF-8"?>
+
+(progn
+  (setq str "vceId><OpId>SI50OKYC</OpId><SvceVe")
+  (setq opidregxp "\\(<OpId>[[:alpha:]\|[:digit:]]+?</OpId>\\)")
+  ;;(goto-char (point-min))
+  (string-match opidregxp str)
+  (match-string 1 str)
 )
+
+
 
 ;; lisp-complete-symbol
 
