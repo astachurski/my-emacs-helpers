@@ -341,19 +341,26 @@ res
 	(setq sec (nth 3 time-data))
 	
 	(setq dir-to-write (concat "messages/" id "/" userid "/"))
-	(make-directory dir-to-write t )
-	(setq filename-to-write (concat dir-to-write "msg" num "." day "." hour "." min "." sec ".xml"))
-	(write-file filename-to-write)
+	(when (not (file-exists-p dir-to-write)) ;; dont create unnecessary directories
+	  (make-directory dir-to-write t )
 	)
-;;      (print cnt)
+
+
+	(setq filename-to-write (concat dir-to-write "msg" num "." day "." hour min sec ".xml"))
+	(when (not (file-exists-p filename-to-write))
+	      (write-file filename-to-write)
+	  )
+	)
       )
     )
+  (print cnt)
   )
 
  
-;; (setq filenamer "c:/Users/43978999/Downloads/bib-logs/B2GInfo.log")
-  ;;(setq filenamer "c:/Users/43978999/Downloads/bib-logs/B2GInfo-small.log")
-(setq filenamer "b2ginfo-small.log")
+;;(setq filenamer "c:/Users/43978999/Downloads/bib-logs/B2GInfo.log")
+;;(setq filenamer "c:/Users/43978999/Downloads/bib-logs/B2GInfo-small.log")
+(setq filenamer "B2GInfo.log")
+;;(setq filenamer "b2ginfo-small.log")
  
 (read-file-to-buffer-and-process filenamer)
 ;;(setq pupu (point))
